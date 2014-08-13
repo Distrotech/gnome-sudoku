@@ -232,6 +232,8 @@ public class GamePrinter: GLib.Object
     private RadioButton intermediate_button;
     private RadioButton expert_button;
 
+    private Spinner spinner;
+
     private const string DIFFICULTY_KEY_NAME = "print-multiple-sudoku-difficulty";
 
     public GamePrinter (SudokuSaver saver, ref ApplicationWindow window)
@@ -282,6 +284,8 @@ public class GamePrinter: GLib.Object
 
         nsudokus_button = builder.get_object ("sudokusToPrintSpinButton") as SpinButton;
         wrap_adjustment ("print-multiple-sudokus-to-print", nsudokus_button.get_adjustment ());
+
+        spinner = builder.get_object ("spinner") as Spinner;
     }
 
     private void wrap_adjustment (string key_name, Adjustment action)
@@ -297,6 +301,9 @@ public class GamePrinter: GLib.Object
             dialog.hide ();
             return;
         }
+
+        spinner.visible = true;
+        spinner.start ();
 
         boards_list = new ArrayList<SudokuBoard> ();
         var nsudokus = (int) nsudokus_button.get_adjustment ().get_value ();
@@ -344,6 +351,8 @@ public class GamePrinter: GLib.Object
             for (var i = 0; i < boards_list.size; i++)
                 boards[i] = boards_list[i];
         }
+
+        spinner.stop ();
 
         SudokuPrinter printer = new SudokuPrinter (boards, ref window);
 

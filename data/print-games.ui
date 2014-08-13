@@ -24,6 +24,12 @@
         <property name="can_focus">False</property>
         <property name="show-close-button">False</property>
         <child>
+            <object class="GtkSpinner" id="spinner">
+                <property name="halign">center</property>
+                <property name="visible">False</property>
+            </object>
+        </child>
+        <child>
           <object class="GtkButton" id="okbutton1">
             <property name="label" translatable="yes">_Print</property>
             <property name="visible">True</property>
