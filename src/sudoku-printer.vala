@@ -3,6 +3,9 @@
 using Gtk;
 using Gee;
 using Gdk;
+//using GLibtop;
+
+ArrayList<SudokuBoard> boards_list;
 
 public class SudokuPrinter : GLib.Object {
 
@@ -295,6 +298,7 @@ public class GamePrinter: GLib.Object
             return;
         }
 
+        boards_list = new ArrayList<SudokuBoard> ();
         var nsudokus = (int) nsudokus_button.get_adjustment ().get_value ();
         DifficultyCategory level;
         var boards = new SudokuBoard[nsudokus];
@@ -312,8 +316,34 @@ public class GamePrinter: GLib.Object
 
         settings.set_enum (DIFFICULTY_KEY_NAME, level);
 
-        for (var i = 0; i < nsudokus; i++)
-            boards[i] = SudokuGenerator.generate_board (level);
+        if (Thread.supported () == false)
+        {
+            for (var i = 0; i < nsudokus; i++)
+                boards[i] = SudokuGenerator.generate_board (level);
+        }
+        else
+        {
+//            var sysinfo = GLibtop.glibtop_sysinfo.get_sysinfo ();
+//            stdout.printf ("ncpus = %d\n", sysinfo.ncpu);
+
+            var ncpu = 4;
+            var base_nsudokus_each = nsudokus / ncpu;
+            var remainder = nsudokus % ncpu;
+            var nsudokus_per_thread = base_nsudokus_each;
+
+            for (var i = 0; i < ncpu; i++)
+            {
+                if (i > (ncpu - remainder - 1))
+                    nsudokus_per_thread = base_nsudokus_each + 1;
+                var gen_thread = new GeneratorThread (nsudokus_per_thread, level, i);
+                Thread<int> thread = new Thread<int> ("Generator thread", gen_thread.run);
+                var result = thread.join ();
+                stdout.printf ("Thread #%d exited\n", result);
+            }
+
+            for (var i = 0; i < boards_list.size; i++)
+                boards[i] = boards_list[i];
+        }
 
         SudokuPrinter printer = new SudokuPrinter (boards, ref window);
 
@@ -324,6 +354,7 @@ public class GamePrinter: GLib.Object
             foreach (SudokuBoard board in boards)
                 saver.add_game_to_finished (new SudokuGame (board));
         }
+        boards_list = null;
     }
 
     public void run_dialog ()
@@ -331,4 +362,26 @@ public class GamePrinter: GLib.Object
         dialog.show ();
     }
 
+}
+
+public class GeneratorThread : Object
+{
+    private int nsudokus;
+    private DifficultyCategory level;
+    private int id;
+
+    public GeneratorThread (int nsudokus, DifficultyCategory level, int id) {
+        this.nsudokus = nsudokus;
+        this.level = level;
+        this.id = id;
+    }
+
+    public int run ()
+    {
+        stdout.printf ("generating %d puzzles\n", nsudokus);
+        for (var i = 0; i < nsudokus; i++)
+            boards_list.add (SudokuGenerator.generate_board (level));
+
+        return id;
+    }
 }

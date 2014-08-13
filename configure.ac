@@ -32,6 +32,7 @@ PKG_CHECK_MODULES(GNOME_SUDOKU, [
   gio-2.0 >= $GLIB_REQUIRED
   gtk+-3.0 >= $GTK_REQUIRED
   gee-0.8
+  libgtop-2.0
 ])
 
 PKG_CHECK_MODULES(LIBSUDOKU, [
