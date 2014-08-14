@@ -297,7 +297,14 @@ public class Sudoku : Gtk.Application
 
         SudokuGenerator.generate_boards_async.begin (1, selected_difficulty, (obj, res) => {
             try {
+                var spinner = builder.get_object ("start_spinner") as Spinner;
+                spinner.active = true;
+                spinner.show ();
+                spinner.start ();
+
                 var gen_boards = SudokuGenerator.generate_boards_async.end (res);
+
+                spinner.stop ();
                 start_game (gen_boards[0]);
             } catch (ThreadError e) {
                 error ("Thread error: %s", e.message);

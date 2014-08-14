@@ -154,6 +154,11 @@
                                 <property name="position">3</property>
                             </packing>
                         </child>
+                        <child>
+                            <object class="GtkSpinner" id="start_spinner">
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
                     </object> <!-- End of start_box -->
                     <packing>
                         <property name="name">start_box</property>
