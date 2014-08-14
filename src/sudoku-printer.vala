@@ -318,12 +318,13 @@ public class GamePrinter: GLib.Object
 
         settings.set_enum (DIFFICULTY_KEY_NAME, level);
 
+        spinner.visible = true;
+        spinner.active = true;
+        spinner.show ();
+        spinner.start ();
+
         SudokuGenerator.generate_boards_async.begin(nsudokus, level, (obj, res) => {
             try {
-                spinner.visible = true;
-                spinner.start ();
-                spinner.show ();
-
                 var boards = SudokuGenerator.generate_boards_async.end(res);
 
                 SudokuPrinter printer = new SudokuPrinter (boards, ref window);
@@ -337,6 +338,7 @@ public class GamePrinter: GLib.Object
 
                 boards_list = null;
                 spinner.stop ();
+                spinner.hide ();
             } catch (ThreadError e) {
                 error ("Thread error: %s\n", e.message);
             }
