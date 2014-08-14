@@ -31,7 +31,6 @@ gnome_sudoku_VALAFLAGS = \
 	--pkg gio-2.0 \
 	--pkg gtk+-3.0 \
 	--pkg gee-0.8 \
-	--target-glib=2.32	\
 	$(top_builddir)/lib/libsudoku.vapi
 
 gnome-sudoku-resources.c: gnome-sudoku.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies gnome-sudoku.gresource.xml)
