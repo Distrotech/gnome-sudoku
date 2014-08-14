@@ -139,6 +139,7 @@ private class SudokuCellView : Gtk.DrawingArea
         });
 
         popover = new Popover (this);
+        popover.get_style_context ().add_class ("osd");
         popover.add (number_picker);
         popover.modal = false;
         popover.position = PositionType.BOTTOM;
@@ -152,6 +153,7 @@ private class SudokuCellView : Gtk.DrawingArea
         earmark_picker.set_earmarks (row, col);
 
         earmark_popover = new Popover (this);
+        earmark_popover.get_style_context ().add_class ("osd");
         earmark_popover.add (earmark_picker);
         earmark_popover.modal = false;
         earmark_popover.position = PositionType.BOTTOM;
