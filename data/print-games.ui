@@ -57,7 +57,7 @@
         <child>
             <object class="GtkSpinner" id="spinner">
                 <property name="valign">center</property>
-                <property name="visible">True</property>
+                <property name="visible">False</property>
             </object>
             <packing>
                 <property name="pack_type">end</property>
