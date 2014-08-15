@@ -327,6 +327,9 @@ public class GamePrinter: GLib.Object
             try {
                 var boards = SudokuGenerator.generate_boards_async.end(res);
 
+                spinner.stop ();
+                spinner.hide ();
+
                 SudokuPrinter printer = new SudokuPrinter (boards, ref window);
                 PrintOperationResult result = printer.print_sudoku ();
                 if (result == PrintOperationResult.APPLY)
@@ -335,10 +338,7 @@ public class GamePrinter: GLib.Object
                     foreach (SudokuBoard board in boards)
                         saver.add_game_to_finished (new SudokuGame (board));
                 }
-
                 boards_list = null;
-                spinner.stop ();
-                spinner.hide ();
             } catch (ThreadError e) {
                 error ("Thread error: %s\n", e.message);
             }
