@@ -29,8 +29,8 @@ public class SudokuGenerator : Object
         var boards_list = new ArrayList<SudokuBoard> ();
         var boards = new SudokuBoard[nboards];
 
-//        var sysinfo = GLibtop.glibtop_sysinfo.get_sysinfo ();
-//        stdout.printf ("ncpus = %d\n", sysinfo.ncpu);
+//        var sysinfo = GTop.glibtop_get_sysinfo ();
+//        stdout.printf ("ncpus = %d\n", (int) sysinfo.ncpu);
         var ncpu = 4;
         var nthreads = int.min (ncpu, nboards);
         var base_nsudokus_each = nboards / nthreads;
