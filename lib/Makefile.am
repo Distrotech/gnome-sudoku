@@ -26,7 +26,7 @@ libsudoku_la_VALAFLAGS = \
 	--pkg gio-2.0 \
 	--pkg json-glib-1.0 \
 	--pkg posix \
-	--target-glib=2.32	\
+	--target-glib=@TARGET_GLIB@	\
 	--header=libsudoku.h \
 	--vapi=libsudoku.vapi
 
