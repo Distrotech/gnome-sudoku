@@ -28,6 +28,7 @@ public class SudokuGenerator : Object
     {
         var boards_list = new ArrayList<SudokuBoard> ();
         var boards = new SudokuBoard[nboards];
+        Thread<void*> thread[8];
 
 //        var sysinfo = GTop.glibtop_get_sysinfo ();
 //        stdout.printf ("ncpus = %d\n", (int) sysinfo.ncpu);
@@ -44,14 +45,14 @@ public class SudokuGenerator : Object
             if (i > (nthreads - remainder - 1))
                 nsudokus_per_thread = base_nsudokus_each + 1;
             var gen_thread = new GeneratorThread (nsudokus_per_thread, category, ref boards_list, generate_boards_async.callback, i);
-            Thread<int> thread = new Thread<int> ("Generator thread", gen_thread.run);
+            thread[i] = new Thread<void*> ("Generator thread", gen_thread.run);
+        }
 
-            // Relinquish the CPU, so that the generated thread can run
+        // Relinquish the CPU, so that the generated threads can run
+        for (var i = 0; i < nthreads; i++)
+        {
             yield;
-
-            stdout.printf ("waiting for #%d to join\n", i);
-            var result = thread.join ();
-            stdout.printf ("Thread #%d exited\n", result);
+            thread[i].join ();
         }
 
         stdout.printf ("boards list size = %d\n", boards_list.size);
@@ -96,13 +97,13 @@ public class GeneratorThread : Object
         this.callback = callback;
     }
 
-    public int run ()
+    public void* run ()
     {
         stdout.printf ("generating %d puzzles\n", nsudokus);
         for (var i = 0; i < nsudokus; i++)
             boards_list.add (SudokuGenerator.generate_board (level));
 
         Idle.add((owned) callback);
-        return id;
+        return null;
     }
 }

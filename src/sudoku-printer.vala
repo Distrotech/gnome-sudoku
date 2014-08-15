@@ -322,6 +322,7 @@ public class GamePrinter: GLib.Object
         spinner.active = true;
         spinner.show ();
         spinner.start ();
+        dialog.sensitive = false;
 
         SudokuGenerator.generate_boards_async.begin(nsudokus, level, (obj, res) => {
             try {
@@ -329,6 +330,7 @@ public class GamePrinter: GLib.Object
 
                 spinner.stop ();
                 spinner.hide ();
+                dialog.sensitive = true;
 
                 SudokuPrinter printer = new SudokuPrinter (boards, ref window);
                 PrintOperationResult result = printer.print_sudoku ();
